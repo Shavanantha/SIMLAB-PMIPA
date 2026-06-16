@@ -12,6 +12,7 @@ $d_alat = mysqli_fetch_assoc($q_alat);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>SIMLAB PMIPA - Digital Portal</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -32,6 +33,9 @@ $d_alat = mysqli_fetch_assoc($q_alat);
             scroll-behavior: smooth;
             background-color: white;
             color: var(--dark-text);
+            /* 🌟 TAMBAHKAN DUA BARIS PENYELAMAT INI */
+            width: 100%;
+            overflow-x: hidden; 
         }
 
         /* --- NAVBAR REVISI (UKURAN SINKRON 85px/75px) --- */
@@ -65,6 +69,9 @@ $d_alat = mysqli_fetch_assoc($q_alat);
         }
         .btn-nav-logout:hover { background: #c9302c; transform: scale(1.05); }
         .btn-nav-login { background: var(--accent-green); color: white !important; padding: 10px 25px; border-radius: 50px; font-size: 0.9rem; }
+
+        /* Sembunyikan tombol toggle secara default di laptop/desktop */
+        .menu-toggle { display: none; }
 
         /* --- HERO SECTION --- */
         .hero { 
@@ -120,6 +127,129 @@ $d_alat = mysqli_fetch_assoc($q_alat);
 
         footer { background: #1a1a1a; color: #ccc; padding: 80px 10% 40px; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 60px; }
+        .footer-bottom { border-top: 1px solid #333; margin-top: 40px; padding-top: 40px; text-align: center; font-size: 0.9rem; }
+        
+        /* 📱 PERBAIKAN RESPONSIVE TOTAL DENGAN HAMBURGER MENU DI HP */
+        @media screen and (max-width: 768px) {
+            nav {
+                padding: 0 5% !important;
+                height: 80px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                background: var(--earthy-green) !important; /* Kunci warna hijau di HP biar gak transparan mentah */
+            }
+            
+            nav.sticky {
+                height: 80px !important;
+                background: var(--earthy-green) !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            }
+
+            /* Munculkan tombol garis tiga di HP */
+            .menu-toggle {
+                display: block !important;
+                color: white !important;
+                font-size: 1.5rem;
+                cursor: pointer;
+                z-index: 100000;
+                transition: 0.3s;
+            }
+
+            .logo-box span {
+                font-size: 1.1rem !important;
+                color: white !important;
+            }
+            nav.sticky .logo-box span {
+                color: white !important;
+            }
+
+            /* Sembunyikan menu link horizontal asli, ubah jadi dropdown meluncur */
+            .nav-links {
+                position: absolute !important;
+                top: 80px;
+                left: -100%; /* Sembunyikan di luar layar kiri awal */
+                width: 100% !important;
+                height: auto !important;
+                background: rgba(85, 107, 47, 0.98) !important; /* Warna earthy green solid dropdown */
+                flex-direction: column !important;
+                gap: 0 !important;
+                padding: 15px 0 !important;
+                transition: 0.4s ease-in-out;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            }
+
+            /* Baris tautan menu di dalam mode HP */
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 15px 0 !important;
+                font-size: 1rem !important;
+                color: white !important;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+            }
+            nav.sticky .nav-links a {
+                color: white !important;
+            }
+
+            /* KELAS AKTIF: Ketika tombol garis tiga diklik, menu meluncur masuk layar */
+            .nav-links.active {
+                left: 0 !important;
+            }
+
+            /* Reset style tombol bawaan agar menyatu di list menu dropdown HP */
+            .btn-nav-logout, .btn-nav-login {
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                padding: 15px 0 !important;
+                font-size: 1rem !important;
+                font-weight: 600;
+            }
+            .btn-nav-logout { color: #ff8784 !important; } /* Warna text logout soft merah di HP */
+
+           /* --- SKALA ULANG TEKS HERO DI HP --- */
+            .hero {
+                padding: 0 20px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .hero h1 {
+                font-size: 1.8rem !important; /* Diperkecil sedikit lagi dari 2.1rem agar pas di layar HP */
+                line-height: 1.2 !important;
+                width: 100% !important;
+                word-wrap: break-word !important; /* Paksa teks patah ke bawah jika kepanjangan */
+            }
+            .hero p {
+                font-size: 0.9rem !important;
+                margin: 15px 0 30px !important;
+                width: 100% !important;
+                padding: 0 10px !important;
+                box-sizing: border-box !important;
+            }
+            .btn-check {
+                padding: 14px 30px !important;
+                font-size: 0.9rem !important;
+            }
+
+            /* --- SKALA ULANG SECTION BAWAH DI HP --- */
+            .section { padding: 60px 5%; }
+            .section-title { margin-bottom: 40px; }
+            .section-title h2 { font-size: 1.8rem !important; }
+            
+            .stat-card { padding: 35px 20px; border-radius: 20px; }
+            .stat-card i, .stat-card .number { font-size: 2.5rem !important; }
+
+            .info-container {
+                grid-template-columns: 1fr !important; /* Kolom roboh ke bawah vertikal */
+                gap: 20px;
+            }
+            .info-card { padding: 25px !important; border-radius: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -132,12 +262,16 @@ $d_alat = mysqli_fetch_assoc($q_alat);
             <img src="assets/img/logo/logo_simlabnew.png" width="45" alt="Logo SIMLAB">
             <span style="margin-left: 5px;">SIMLAB PMIPA</span>
         </a>
-        <ul class="nav-links">
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <ul class="nav-links" id="nav-list">
             <li><a href="index.php" class="active">Beranda</a></li>
             <li><a href="katalog.php">Katalog Alat</a></li>
             <li><a href="panduan.php">Panduan</a></li>
             <?php if(isset($_SESSION['login'])): ?>
-                <!-- LINK SUDAH DIPASTIKAN KE riwayat.php -->
                 <li><a href="riwayat.php">Riwayat Saya</a></li>
                 <li><a href="logout.php" class="btn-nav-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             <?php else: ?>
@@ -280,6 +414,19 @@ $d_alat = mysqli_fetch_assoc($q_alat);
                 icon.classList.toggle('fa-plus');
                 icon.classList.toggle('fa-minus');
             };
+        });
+
+        // 🌟 JAVASCRIPT BARU: PEMICU KLIK BUKA-TUTUP DROPDOWN MENU DI HP
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            
+            // Mengubah ikon garis tiga (bars) menjadi tanda silang (times) saat menu terbuka
+            const icon = mobileMenu.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
         });
     </script>
 </body>

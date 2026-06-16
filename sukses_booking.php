@@ -56,6 +56,8 @@ if (!$data) {
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
         }
         .container {
             background: white;
@@ -66,6 +68,7 @@ if (!$data) {
             max-width: 450px;
             width: 90%;
             margin: 20px;
+            box-sizing: border-box;
         }
         .icon-success {
             color: var(--earthy-green);
@@ -75,17 +78,21 @@ if (!$data) {
         h2 {
             color: var(--earthy-green);
             margin-bottom: 5px;
+            font-weight: 800;
         }
         .trx-id {
             background: #f0f4eb;
             color: var(--earthy-green);
             display: inline-block;
-            padding: 5px 15px;
+            padding: 6px 15px;
             border-radius: 8px;
             font-weight: bold;
             font-size: 1.1rem;
             margin-bottom: 20px;
             border: 1px dashed var(--earthy-green);
+            max-width: 100%;
+            word-wrap: break-word; /* Mencegah teks TRX ID panjang meluber keluar box di HP kecil */
+            box-sizing: border-box;
         }
         .qr-box {
             background: #fdfdfd;
@@ -94,11 +101,14 @@ if (!$data) {
             border-radius: 15px;
             display: inline-block;
             margin-bottom: 20px;
+            box-sizing: border-box;
+            max-width: 100%;
         }
         .qr-box img {
             width: 200px;
             height: 200px;
             display: block;
+            margin: 0 auto;
         }
         .info-detail {
             text-align: left;
@@ -108,17 +118,20 @@ if (!$data) {
             font-size: 0.9rem;
             margin-bottom: 25px;
             border: 1px solid #eee;
+            box-sizing: border-box;
+            width: 100%;
         }
         .info-detail table {
             width: 100%;
             border-collapse: collapse;
         }
         .info-detail td {
-            padding: 6px 0;
+            padding: 8px 0;
+            vertical-align: top;
         }
         .info-detail td.label {
             color: #888;
-            width: 40%;
+            width: 35%;
         }
         .btn-kembali {
             display: block;
@@ -129,11 +142,53 @@ if (!$data) {
             border-radius: 12px;
             font-weight: bold;
             transition: 0.3s;
+            box-sizing: border-box;
+            width: 100%;
         }
         .btn-kembali:hover {
             background: #6b8e23;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(85, 107, 47, 0.3);
+        }
+
+        /* 📱 MEDIA QUERY PENYELAMAT RESPONSIF HALAMAN SUKSES DI LAYAR HP */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px 0;
+            }
+            .container {
+                padding: 25px 20px !important; /* Perkecil padding dalam agar tidak desak-desakan di layar HP */
+                margin: 15px !important;
+                border-radius: 15px !important;
+            }
+            .icon-success {
+                font-size: 3.2rem !important; /* Perkecil skala ikon centang di HP */
+            }
+            h2 {
+                font-size: 1.4rem !important;
+            }
+            .trx-id {
+                font-size: 0.95rem !important; /* Sesuaikan ukuran font string token agar rapi */
+                padding: 5px 10px !important;
+            }
+            .qr-box {
+                padding: 10px !important;
+            }
+            .qr-box img {
+                width: 160px !important; /* Perkecil visualisasi QR Code agar muat sempurna di frame HP */
+                height: 160px !important;
+            }
+            .info-detail {
+                padding: 12px !important;
+                font-size: 0.85rem !important; /* Perkecil teks deskripsi tabel agar tidak patah berantakan */
+            }
+            .info-detail td {
+                padding: 6px 0 !important;
+            }
+            .btn-kembali {
+                padding: 10px !important;
+                font-size: 0.9rem !important;
+            }
         }
     </style>
 </head>
@@ -151,7 +206,7 @@ if (!$data) {
         <img src="<?php echo $data['qr_code']; ?>" alt="QR Token Peminjaman">
     </div>
     
-    <p style="font-size: 0.85rem; color: #e67e22; font-weight: 600; margin-bottom: 20px;">
+    <p style="font-size: 0.8rem; color: #e67e22; font-weight: 600; margin-bottom: 20px; padding: 0 5px; line-height: 1.4; text-align: center;">
         <i class="fas fa-exclamation-triangle"></i> Tunjukkan QR Code di atas kepada Laboran untuk penyerahan alat praktikum.
     </p>
 
@@ -181,7 +236,7 @@ if (!$data) {
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init();
+    AOS.init({ once: true });
 </script>
 </body>
 </html>

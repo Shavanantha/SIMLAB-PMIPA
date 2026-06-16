@@ -332,6 +332,32 @@ if (isset($_POST['login_proses'])) {
             .login-illustration img { width: 70px; }
             .login-box { padding: 35px 25px; }
         }
+        
+        /* 📱 PENYELAMAT HALAMAN LOGIN DI HP */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 20px !important;
+                box-sizing: border-box;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                min-height: 100vh;
+            }
+            /* Ubah layout login 2 kolom menjadi 1 kolom memanjang ke bawah */
+            .card-panel-login { 
+                grid-template-columns: 1fr !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box;
+            }
+            /* Sembunyikan area co-branding kiri di HP agar fokus langsung ke form isi NPM */
+            .area-branding-kiri {
+                display: none !important;
+            }
+            .area-form-kanan {
+                padding: 30px 20px !important;
+            }
+        }
     </style>
 </head>
 <body>

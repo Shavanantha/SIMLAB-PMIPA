@@ -26,20 +26,27 @@ include 'config/koneksi.php';
             margin: 0; 
             background-color: var(--soft-krem); 
             color: var(--dark-text); 
+            overflow-x: hidden;
+            width: 100%;
         }
 
-        /* NAVBAR ATAS (NAVBAR HORIZONTAL) */
-        .navbar {
-            background: white;
-            padding: 15px 8%;
-            display: flex;
+        /* --- NAVBAR MASTER (SINKRON 100% DENGAN INDEX/KATALOG) --- */
+        nav {
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            height: 85px;
+            display: flex; 
+            align-items: center; 
             justify-content: space-between;
-            align-items: center;
+            padding: 0 8%; 
+            box-sizing: border-box; 
+            transition: 0.4s ease; 
+            z-index: 99999;
+            background: white;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
         }
+        
         .navbar-brand { 
             display: flex; 
             align-items: center; 
@@ -49,34 +56,33 @@ include 'config/koneksi.php';
             font-weight: 800; 
             font-size: 1.2rem;
         }
-        .navbar-menu { 
-            display: flex; 
-            align-items: center;
-            gap: 35px; 
-        }
-        .navbar-menu a { 
-            text-decoration: none; 
-            color: var(--dark-text); 
-            font-weight: 600; 
-            font-size: 0.95rem; 
-            transition: 0.3s; 
-        }
-        .navbar-menu a:hover, .navbar-menu a.active { 
-            color: var(--earthy-green); 
-        }
+        .navbar-brand span { font-weight: 800; }
+
+        .nav-links { display: flex; gap: 35px; list-style: none; align-items: center; margin: 0; padding: 0; }
+        .nav-links a { text-decoration: none; color: var(--dark-text); font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--earthy-green) !important; }
+        
         .btn-login { 
             background: var(--earthy-green); 
             color: white !important; 
             padding: 10px 25px; 
             border-radius: 50px; 
             box-shadow: 0 4px 10px rgba(85, 107, 47, 0.3);
+            font-size: 0.9rem;
+            text-decoration: none;
+            font-weight: 600;
         }
 
-        /* MAIN CONTENT */
+        /* Sembunyikan tombol hamburger secara default di laptop */
+        .menu-toggle { display: none; }
+
+        /* --- MAIN CONTENT LAYOUT --- */
         .container { 
-            padding: 60px 10% 100px; 
+            padding: 140px 8% 100px; /* Dikunci agar tidak amblas tertutup navbar fixed laptop */
             max-width: 1100px;
             margin: auto;
+            box-sizing: border-box;
+            width: 100%;
         }
         
         .content-box { 
@@ -85,6 +91,8 @@ include 'config/koneksi.php';
             border-radius: 30px; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.03); 
             border: 1px solid #f1f1f1;
+            box-sizing: border-box;
+            width: 100%;
         }
 
         .header-panduan { 
@@ -105,7 +113,7 @@ include 'config/koneksi.php';
             font-size: 1.1rem;
         }
 
-        /* TIMELINE STYLE */
+        /* --- TIMELINE STYLE --- */
         .timeline { position: relative; padding-left: 20px; }
         .timeline::before {
             content: '';
@@ -142,6 +150,7 @@ include 'config/koneksi.php';
             width: 100%;
             transition: 0.4s;
             border: 1px solid #eee;
+            box-sizing: border-box;
         }
         .step:hover .step-content { 
             border-color: var(--earthy-green); 
@@ -176,8 +185,10 @@ include 'config/koneksi.php';
             align-items: center; 
             gap: 15px;
             border-left: 5px solid #2980b9;
+            box-sizing: border-box;
         }
 
+        /* --- FOOTER --- */
         footer { 
             background: #1a1a1a; 
             color: #ccc; 
@@ -193,33 +204,117 @@ include 'config/koneksi.php';
             border-top: 1px solid #333; font-size: 0.85rem; opacity: 0.6; 
         }
 
-        @media (max-width: 768px) {
-            .navbar { padding: 15px 5%; }
-            .navbar-menu { display: none; } /* Mobile menu simplified for demo */
-            .container { padding: 40px 5%; }
+        /* 📱 JINAKKAN TAMPILAN RESPONSIVE TOTAL KHUSUS DI HP */
+        @media screen and (max-width: 768px) {
+            nav {
+                padding: 0 5% !important;
+                height: 80px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                background: var(--earthy-green) !important; /* Kunci warna hijau PMIPA di HP */
+            }
+
+            /* Perbaikan posisi tombol garis tiga agar pas di dalam ruang kanan layar HP */
+            .menu-toggle {
+                display: block !important;
+                color: white !important;
+                font-size: 1.5rem;
+                cursor: pointer;
+                z-index: 100000;
+                margin-left: auto; /* Paksa nempel presisi di kanan bar */
+            }
+
+            .navbar-brand span {
+                color: white !important;
+                font-size: 1.1rem !important;
+            }
+
+            /* Menu drop-down meluncur ke bawah vertikal */
+            .nav-links {
+                position: absolute !important;
+                top: 80px;
+                left: -100%; /* Sembunyi aman di kiri luar layar */
+                width: 100% !important;
+                background: rgba(85, 107, 47, 0.98) !important;
+                flex-direction: column !important;
+                gap: 0 !important;
+                padding: 15px 0 !important;
+                transition: 0.4s ease-in-out;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            }
+
+            .nav-links li { width: 100%; text-align: center; }
+            .nav-links a { display: block; padding: 15px 0 !important; color: white !important; border-bottom: 1px solid rgba(255,255,255,0.08); }
+            .nav-links.active { left: 0 !important; }
+
+            .btn-login {
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                padding: 15px 0 !important;
+                display: block;
+                width: 100%;
+            }
+            .nav-links a[style*="color: #d9534f;"] { color: #ff8784 !important; }
+
+            /* 🌟 PENYELAMAT: Tambah padding atas ekstra besar di HP agar judul PROSEDUR PEMINJAMAN ALAT muncul utuh */
+            .container { 
+                padding: 120px 15px 60px !important; 
+                width: 100% !important;
+                box-sizing: border-box;
+            }
+            .content-box { padding: 25px 15px !important; border-radius: 20px; width: 100% !important; box-sizing: border-box; }
+            
+            .header-panduan { margin-bottom: 35px; padding-bottom: 15px; }
+            .header-panduan h2 { font-size: 1.4rem !important; font-weight: 800 !important; display: block !important; visibility: visible !important; }
+            .header-panduan p { font-size: 0.9rem !important; }
+
+            /* Skala ulang bodi timeline agar simetris pas di layar HP */
+            .timeline { padding-left: 0px !important; }
+            .timeline::before { left: 14px !important; } /* Geser as garis vertikal ke kiri bodi */
+            
+            .step { margin-bottom: 35px !important; gap: 0; }
+            .step-number { 
+                width: 28px !important; 
+                height: 28px !important; 
+                font-size: 0.85rem !important; 
+                margin-right: 15px !important; 
+                border: 2px solid white !important;
+            }
+            .step-content { padding: 15px 15px !important; border-radius: 15px; width: calc(100% - 43px) !important; box-sizing: border-box; }
+            .step-content h3 { font-size: 1rem !important; gap: 8px !important; }
+            .step-content p { font-size: 0.85rem !important; line-height: 1.6; }
+            
+            .step:hover .step-content { transform: none !important; } /* Matikan animasi geser kanan agar tidak memicu geser layar samping */
+            .alert-info { padding: 15px !important; font-size: 0.85rem !important; gap: 10px !important; flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR ATAS -->
-        <nav class="navbar">
+    <nav id="navbar">
         <a href="index.php" class="navbar-brand">
             <img src="assets/img/logo/logo_unila.png" width="42" alt="Logo Unila">
             <img src="assets/img/logo/logo_simlabnew.png" width="42" alt="Logo SIMLAB">
             <span style="margin-left: 5px;">SIMLAB PMIPA</span>
         </a>
-        <div class="navbar-menu">
-            <a href="index.php">Beranda</a>
-            <a href="katalog.php">Katalog Alat</a>
-            <a href="panduan.php" class="active">Panduan</a>
-            <?php if(isset($_SESSION['login'])): ?>
-                <a href="riwayat.php">Riwayat Saya</a>
-                <a href="logout.php" style="color: #d9534f;"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            <?php else: ?>
-                <a href="login.php" class="btn-login">Login</a>
-            <?php endif; ?>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
         </div>
+
+        <ul class="nav-links" id="nav-list">
+            <li><a href="index.php">Beranda</a></li>
+            <li><a href="katalog.php">Katalog Alat</a></li>
+            <li><a href="panduan.php" class="active">Panduan</a></li>
+            <?php if(isset($_SESSION['login'])): ?>
+                <li><a href="riwayat.php">Riwayat Saya</a></li>
+                <li><a href="logout.php" style="color: #d9534f;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <?php else: ?>
+                <li><a href="login.php" class="btn-login">Login</a></li>
+            <?php endif; ?>
+        </ul>
     </nav>
 
     <div class="container">
@@ -229,7 +324,7 @@ include 'config/koneksi.php';
                 <p>Halo <strong><?php echo isset($_SESSION['nama']) ? $_SESSION['nama'] : 'Mahasiswa Unila'; ?></strong>, ikuti alur peminjaman berikut:</p>
             </div>
 
-<div class="timeline">
+            <div class="timeline">
                 
                 <div class="step" data-aos="fade-left" data-aos-delay="100">
                     <div class="step-number">1</div>
@@ -272,7 +367,7 @@ include 'config/koneksi.php';
                 </div>
             </div>
 
-            <div class="alert-info" style="background: #f1f7e9; color: var(--earthy-green); border-left: 5px solid var(--earthy-green);">
+            <div class="alert-info">
                 <i class="fas fa-circle-info" style="color: var(--accent-green);"></i>
                 <span>Status pengesahan sirkulasi dan sisa batas waktu kembali dapat Anda pantau secara <i>real-time</i> melalui menu <strong>Riwayat Saya</strong> setelah login.</span>
             </div>
@@ -281,17 +376,19 @@ include 'config/koneksi.php';
 
     <footer>
         <div class="footer-grid">
-            <div class="footer-info">
-                <h4><i class="fas fa-map-marker-alt"></i> Lokasi Laboratorium</h4>
-                <p>Gedung L FKIP Universitas Lampung, Lantai 2 dan 3</p>
-                <p>Jl. Prof. Dr. Sumantri Brojonegoro No. 1</p>
-                <p>Bandar Lampung, 35145</p>
-            </div>
-            <div class="footer-info">
-                <h4><i class="fas fa-envelope"></i> Hubungi Kami</h4>
-                <p>Email: labpmipa@fkip.unila.ac.id</p>
-                <p>WhatsApp: +62 812-3456-7890 (Admin Lab)</p>
-                <p>Instagram: @simlabpmipa_unila</p>
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <h4><i class="fas fa-map-marker-alt"></i> Lokasi Laboratorium</h4>
+                    <p>Gedung L FKIP Universitas Lampung, Lantai 2 dan 3</p>
+                    <p>Jl. Prof. Dr. Sumantri Brojonegoro No. 1</p>
+                    <p>Bandar Lampung, 35145</p>
+                </div>
+                <div class="footer-info">
+                    <h4><i class="fas fa-envelope"></i> Hubungi Kami</h4>
+                    <p>Email: labpmipa@fkip.unila.ac.id</p>
+                    <p>WhatsApp: +62 812-3456-7890 (Admin Lab)</p>
+                    <p>Instagram: @simlabpmipa_unila</p>
+                </div>
             </div>
         </div>
         <div class="footer-bottom">
@@ -301,9 +398,18 @@ include 'config/koneksi.php';
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({
-            duration: 1000,
-            once: true
+        AOS.init({ duration: 1000, once: true });
+
+        // JAVASCRIPT PICUAN DROPDOWN PANDUAN MOBILE HP
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            
+            const icon = mobileMenu.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
         });
     </script>
 

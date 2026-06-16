@@ -38,74 +38,194 @@ $query = mysqli_query($koneksi, $sql);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS bawaan kamu tetap di sini ya... */
         :root { --primary: #556B2F; --accent: #6b8e23; --soft-krem: #fdfaf1; --dark: #2d2d2d; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background-color: var(--soft-krem); color: var(--dark); overflow-x: hidden; }
-        .navbar { position: fixed; top: 0; width: 100%; height: 85px; display: flex; align-items: center; justify-content: space-between; padding: 0 8%; box-sizing: border-box; z-index: 1000; transition: 0.4s; }
-        .navbar.sticky { background: white; height: 75px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background-color: var(--soft-krem); color: var(--dark); overflow-x: hidden; width: 100%; }
+        
+        /* --- NAVBAR MASTER (SINKRON BERBASIS TAG <NAV>) --- */
+        nav { position: fixed; top: 0; width: 100%; height: 85px; display: flex; align-items: center; justify-content: space-between; padding: 0 8%; box-sizing: border-box; z-index: 99999; transition: 0.4s; }
+        nav.sticky { background: white; height: 75px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        
         .navbar-brand { display: flex; align-items: center; gap: 15px; text-decoration: none; color: white; transition: 0.3s; }
-        .navbar.sticky .navbar-brand { color: var(--primary); }
+        nav.sticky .navbar-brand { color: var(--primary); }
         .navbar-brand span { font-weight: 800; font-size: 1.3rem; letter-spacing: 1px; }
-        .navbar-menu { display: flex; gap: 35px; list-style: none; align-items: center; margin: 0; padding: 0; }
-        .navbar-menu a { text-decoration: none; color: white; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
-        .navbar.sticky .navbar-menu a { color: var(--dark); }
-        .navbar-menu a:hover, .navbar-menu a.active { color: var(--accent) !important; }
-        .navbar.sticky .navbar-menu a.active { color: var(--primary) !important; }
-        .btn-login-nav { background: var(--accent); color: white !important; padding: 10px 25px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        .nav-links { display: flex; gap: 35px; list-style: none; align-items: center; margin: 0; padding: 0; }
+        .nav-links a { text-decoration: none; color: white; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        nav.sticky .nav-links a { color: var(--dark); }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent) !important; }
+        nav.sticky .nav-links a.active { color: var(--primary) !important; }
+        
+        .btn-login-nav { background: var(--accent); color: white !important; padding: 10px 25px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; }
+        .btn-login-nav:hover { background: var(--primary); transform: scale(1.05); }
+
+        /* Sembunyikan tombol toggle menu mobile di mode desktop */
+        .menu-toggle { display: none; }
+
+        /* --- LAYOUT HALAMAN --- */
         .header-section { height: 450px; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/img/lab_bg.jpg'); background-size: cover; background-position: center; background-attachment: fixed; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; }
         .header-section h1 { font-size: 3.5rem; font-weight: 800; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
         .header-section p { font-size: 1.2rem; opacity: 0.8; margin-top: 15px; max-width: 700px; line-height: 1.6; }
-        .search-wrapper { margin-top: -45px; display: flex; flex-direction: column; align-items: center; padding: 0 20px; gap: 15px; }
+        
+        .search-wrapper { margin-top: -45px; display: flex; flex-direction: column; align-items: center; padding: 0 20px; gap: 15px; width: 100%; box-sizing: border-box; }
         .search-bar { background: white; width: 100%; max-width: 850px; padding: 15px 35px; border-radius: 100px; display: flex; align-items: center; box-shadow: 0 15px 40px rgba(0,0,0,0.1); border: 1px solid #eee; box-sizing: border-box; }
         .search-bar input { flex: 1; border: none; outline: none; font-size: 1rem; font-family: inherit; }
         .search-bar button { background: var(--primary); color: white; border: none; padding: 12px 35px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .search-bar button:hover { background: var(--accent); transform: scale(1.05); }
-        .content-container { padding: 40px 8% 120px; }
+        
+        .content-container { padding: 40px 8% 120px; width: 100%; box-sizing: border-box; }
         .grid-alat { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; }
         .card-alat { background: white; border-radius: 30px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; transition: 0.5s; display: flex; flex-direction: column; }
         .card-alat:hover { transform: translateY(-15px); box-shadow: 0 20px 45px rgba(0,0,0,0.08); border-color: var(--primary); }
+        
         .img-box { position: relative; height: 250px; overflow: hidden; }
         .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
         .card-alat:hover .img-box img { transform: scale(1.1); }
+        
         .badge-status { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.95); padding: 6px 18px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; color: var(--primary); z-index: 2; }
         .card-info { padding: 25px 35px 35px; flex-grow: 1; display: flex; flex-direction: column; }
         .card-info h3 { margin: 0 0 10px; color: var(--dark); font-size: 1.5rem; font-weight: 700; }
-        .card-info p { font-size: 0.95rem; color: #777; line-height: 1.7; margin-bottom: 25px; }
+        .card-info p { font-size: 0.95rem; color: #777; line-height: 1.7; margin-bottom: 25px; word-wrap: break-word; }
         .stok-wrapper { padding: 0 35px; margin-top: 25px; font-size: 0.85rem; }
+        
         .btn-action { margin-top: auto; background: var(--primary); color: white; text-align: center; text-decoration: none; padding: 16px; border-radius: 20px; font-weight: 800; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; font-size: 0.95rem; }
         .btn-action:hover { background: var(--accent); box-shadow: 0 10px 20px rgba(107, 142, 35, 0.3); cursor: pointer; }
         .btn-disabled { margin-top: auto; background: #ddd !important; color: #999 !important; text-align: center; padding: 16px; border-radius: 20px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; font-size: 0.95rem; cursor: not-allowed; box-shadow: none !important; }
+        
+        .prodi-filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 20px; width: 100%; max-width: 850px; }
+        .prodi-badge-btn { text-decoration: none; padding: 8px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; background: white; color: var(--primary); border: 2px solid var(--primary); transition: 0.3s; }
+        .prodi-badge-btn.active, .prodi-badge-btn:hover { background: var(--primary); color: white; }
+        
         footer { background: #1a1a1a; color: #ccc; padding: 80px 10% 40px; border-top: 5px solid var(--primary); margin-top: 50px; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 60px; text-align: left; }
         .footer-info h4 { color: white; margin-bottom: 25px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
         .footer-info p { line-height: 1.8; font-size: 0.95rem; margin: 5px 0; }
         .footer-bottom { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid #333; font-size: 0.85rem; opacity: 0.6; }
 
-        /* 🌟 CSS BARU: Tombol Filter Prodi PMIPA */
-        .prodi-filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 20px; width: 100%; max-width: 850px; }
-        .prodi-badge-btn { text-decoration: none; padding: 8px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; background: white; color: var(--primary); border: 2px solid var(--primary); transition: 0.3s; }
-        .prodi-badge-btn.active, .prodi-badge-btn:hover { background: var(--primary); color: white; }
+        /* 📱 REVISI NAV BAR & GRID KATALOG KHUSUS LAYAR HP */
+        @media screen and (max-width: 768px) {
+            nav {
+                padding: 0 5% !important;
+                height: 80px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                background: var(--primary) !important; /* Mengunci warna dasar hijau di HP */
+            }
+            
+            nav.sticky {
+                height: 80px !important;
+                background: var(--primary) !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            }
+
+            .menu-toggle {
+                display: block !important;
+                color: white !important;
+                font-size: 1.5rem;
+                cursor: pointer;
+                z-index: 100000;
+            }
+
+            .navbar-brand span {
+                font-size: 1.1rem !important;
+                color: white !important;
+            }
+            nav.sticky .navbar-brand span {
+                color: white !important;
+            }
+
+            .nav-links {
+                position: absolute !important;
+                top: 80px;
+                left: -100%; /* Bersembunyi di luar layar sebelah kiri */
+                width: 100% !important;
+                background: rgba(85, 107, 47, 0.98) !important; /* Dropdown hijau solid */
+                flex-direction: column !important;
+                gap: 0 !important;
+                padding: 15px 0 !important;
+                transition: 0.4s ease-in-out;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            }
+
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 15px 0 !important;
+                font-size: 1rem !important;
+                color: white !important;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+            }
+            nav.sticky .nav-links a {
+                color: white !important;
+            }
+
+            .nav-links.active {
+                left: 0 !important;
+            }
+
+            .btn-login-nav, .navbar-menu a[href="logout.php"] {
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                background: transparent !important;
+                padding: 15px 0 !important;
+                display: block !important;
+                width: 100%;
+            }
+            .navbar-menu a[href="logout.php"] { color: #ff8784 !important; }
+
+            /* --- SKALA REVISI KONTEN HEADER & SEARCH DI HP --- */
+            .header-section h1 { font-size: 2rem !important; }
+            .header-section p { font-size: 0.95rem !important; padding: 0 15px; }
+            
+            .search-bar { padding: 10px 20px !important; border-radius: 30px !important; flex-direction: column; gap: 10px; }
+            .search-bar input { width: 100%; text-align: center; padding: 5px 0; }
+            .search-bar button { width: 100%; padding: 10px 0 !important; }
+            .prodi-filter-container { gap: 8px !important; }
+            .prodi-badge-btn { padding: 6px 14px !important; font-size: 0.75rem !important; }
+
+            /* --- KUNCI UTAMA GRID KATALOG DI HP --- */
+            .content-container { padding: 30px 4% 80px; }
+            .grid-alat {
+                grid-template-columns: 1fr !important; /* Kartu roboh jadi 1 kolom vertikal ke bawah */
+                gap: 25px !important;
+            }
+            .card-alat {
+                width: 100% !important;
+                box-sizing: border-box;
+            }
+            .card-info { padding: 20px !important; }
+            .card-info h3 { font-size: 1.3rem !important; }
+        }
     </style>
 </head>
 <body>
 
-    <nav class="navbar" id="navbar">
+    <nav id="navbar">
         <a href="index.php" class="navbar-brand">
             <img src="assets/img/logo/logo_unila.png" width="45">
             <img src="assets/img/logo/logo_simlabnew.png" width="45" alt="Logo SIMLAB">
             <span style="margin-left: 5px;">SIMLAB PMIPA</span>
         </a>
-        <div class="navbar-menu">
-            <a href="index.php">Beranda</a>
-            <a href="katalog.php" class="active">Katalog Alat</a>
-            <a href="panduan.php">Panduan</a>
-            <?php if(isset($_SESSION['login'])): ?>
-                <a href="riwayat.php">Riwayat Saya</a>
-                <a href="logout.php" style="color: #d9534f;"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            <?php else: ?>
-                <a href="login.php" class="btn-login-nav">Login</a>
-            <?php endif; ?>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
         </div>
+
+        <ul class="nav-links" id="nav-list">
+            <li><a href="index.php">Beranda</a></li>
+            <li><a href="katalog.php" class="active">Katalog Alat</a></li>
+            <li><a href="panduan.php">Panduan</a></li>
+            <?php if(isset($_SESSION['login'])): ?>
+                <li><a href="riwayat.php">Riwayat Saya</a></li>
+                <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <?php else: ?>
+                <li><a href="login.php" class="btn-login-nav">Login</a></li>
+            <?php endif; ?>
+        </ul>
     </nav>
 
     <header class="header-section">
@@ -212,7 +332,7 @@ $query = mysqli_query($koneksi, $sql);
     <script>
         AOS.init({ duration: 1000, once: true });
 
-        // LOGIKA STICKY NAVBAR
+        // LOGIKA STICKY NAVBAR LAPTOP
         const navbar = document.getElementById("navbar");
         window.onscroll = () => {
             if (window.scrollY > 100) {
@@ -221,6 +341,19 @@ $query = mysqli_query($koneksi, $sql);
                 navbar.classList.remove("sticky");
             }
         };
+
+        // 🌟 AKTIVASI HAMBURGER MENU DROPDOWN KATALOG DI HP
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            
+            // Animasi transisi icon bars ke times (X)
+            const icon = mobileMenu.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
     </script>
 </body>
 </html>

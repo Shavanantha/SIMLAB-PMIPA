@@ -2,6 +2,7 @@
 session_start();
 include 'config/koneksi.php';
 
+// Proteksi: Kalau belum login, tendang balik ke login.php
 if (!isset($_SESSION['login'])) {
     header("Location: login.php");
     exit;
@@ -37,24 +38,27 @@ $d_total = mysqli_fetch_assoc($q_total);
             font-family: 'Segoe UI', sans-serif; 
             margin: 0; background-color: var(--soft-krem); 
             color: var(--dark); 
+            overflow-x: hidden;
+            width: 100%;
         }
 
-        /* NAVBAR ATAS (Sama dengan Panduan & Index) */
-        .navbar {
+        /* --- NAVBAR MASTER FIXED (SINKRON 100% DENGAN INDEX/KATALOG) --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 85px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 8%; box-sizing: border-box; transition: 0.4s ease; z-index: 99999;
             background: white;
-            padding: 15px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
         }
+        
         .navbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--primary); font-weight: 800; }
-        .navbar-menu { display: flex; gap: 30px; align-items: center; }
-        .navbar-menu a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
-        .navbar-menu a:hover, .navbar-menu a.active { color: var(--primary); }
+        
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; margin: 0; padding: 0; }
+        .nav-links a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+
+        /* Sembunyikan tombol hamburger di mode laptop */
+        .menu-toggle { display: none; }
 
         /* HEADER & CONTAINER */
         .header-history {
@@ -64,7 +68,7 @@ $d_total = mysqli_fetch_assoc($q_total);
             justify-content: center; align-items: center; color: white; text-align: center;
         }
 
-        .container { padding: 0 8% 60px; margin-top: -50px; }
+        .container { padding: 0 8% 60px; margin-top: -50px; width: 100%; box-sizing: border-box; }
         
         .summary-wrapper {
             display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;
@@ -80,6 +84,7 @@ $d_total = mysqli_fetch_assoc($q_total);
         .history-card {
             background: white; border-radius: 30px; padding: 40px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid #eee;
+            box-sizing: border-box;
         }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 20px; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; border-bottom: 2px solid var(--soft-krem); }
@@ -101,7 +106,7 @@ $d_total = mysqli_fetch_assoc($q_total);
             background: #1a1a1a; 
             color: #ccc; 
             padding: 80px 10% 40px; 
-            border-top: 5px solid var(--earthy-green);
+            border-top: 5px solid var(--primary);
             margin-top: 50px;
         }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 60px; text-align: left; }
@@ -111,24 +116,113 @@ $d_total = mysqli_fetch_assoc($q_total);
             text-align: center; margin-top: 60px; padding-top: 30px; 
             border-top: 1px solid #333; font-size: 0.85rem; opacity: 0.6; 
         }
+
+        /* 📱 JINAKKAN NAVIGATION DROPDOWN & RESPONSIVE TABLE DI LAYAR HP */
+        @media screen and (max-width: 768px) {
+            nav {
+                padding: 0 5% !important;
+                height: 80px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                background: var(--primary) !important; /* Lock warna dasar hijau di HP */
+            }
+
+            .menu-toggle {
+                display: block !important;
+                color: white !important;
+                font-size: 1.5rem;
+                cursor: pointer;
+                z-index: 100000;
+            }
+
+            .navbar-brand span {
+                font-size: 1.1rem !important;
+                color: white !important;
+            }
+
+            /* Daftar link menu bertransformasi menjadi dropdown vertikal mobile */
+            .nav-links {
+                position: absolute !important;
+                top: 80px;
+                left: -100%; /* Sembunyi awal di luar layar kiri */
+                width: 100% !important;
+                background: rgba(85, 107, 47, 0.98) !important;
+                flex-direction: column !important;
+                gap: 0 !important;
+                padding: 15px 0 !important;
+                transition: 0.4s ease-in-out;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            }
+
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 15px 0 !important;
+                font-size: 1rem !important;
+                color: white !important;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+            }
+
+            /* Pemicu geser masuk layar dari JavaScript */
+            .nav-links.active {
+                left: 0 !important;
+            }
+
+            .nav-links a[href="logout.php"] {
+                color: #ff8784 !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+
+            /* --- RESIZE KONTEN UTAMA DI HP --- */
+            .container { padding: 0 15px 40px !important; }
+            .summary-mini { padding: 15px; gap: 10px; }
+            .summary-mini i { padding: 10px; font-size: 1.2rem; }
+            .history-card { padding: 20px 15px !important; border-radius: 20px; }
+
+            /* 🌟 KUNCI EMAS: Wrapper pembungkus tabel agar bisa di-scroll horizontal tanpa jebol */
+            .table-responsive-wrapper {
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch; /* Momentum scrolling halus di smartphone */
+                margin-top: 10px;
+            }
+            
+            table {
+                min-width: 650px !important; /* Paksa lebar minimal tabel agar isi kolom tidak berdesakan */
+            }
+            
+            th, td { padding: 12px 10px !important; font-size: 0.85rem !important; }
+            .alat-img { width: 45px; height: 45px; border-radius: 8px; }
+            .btn-detail { padding: 6px 12px !important; font-size: 0.75rem !important; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR ATAS -->
-    <nav class="navbar">
+    <nav id="navbar">
         <a href="index.php" class="navbar-brand">
             <img src="assets/img/logo/logo_unila.png" width="40">
             <img src="assets/img/logo/logo_simlabnew.png" width="42" alt="Logo SIMLAB">
             <span style="margin-left: 5px;">SIMLAB PMIPA</span>
         </a>
-        <div class="navbar-menu">
-            <a href="index.php">Beranda</a>
-            <a href="katalog.php">Katalog Alat</a>
-            <a href="panduan.php">Panduan</a>
-            <a href="riwayat.php" class="active">Riwayat Saya</a>
-            <a href="logout.php" style="color: #e74c3c;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fas fa-bars"></i>
         </div>
+
+        <ul class="nav-links" id="nav-list">
+            <li><a href="index.php">Beranda</a></li>
+            <li><a href="katalog.php">Katalog Alat</a></li>
+            <li><a href="panduan.php">Panduan</a></li>
+            <li><a href="riwayat.php" class="active">Riwayat Saya</a></li>
+            <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
     </nav>
 
     <header class="header-history">
@@ -155,78 +249,75 @@ $d_total = mysqli_fetch_assoc($q_total);
         </div>
 
         <div class="history-card" data-aos="fade-up">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Alat</th>
-                        <th>Tanggal</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $sql = "SELECT peminjaman.*, alat.nama_alat, alat.foto_alat 
-                            FROM peminjaman 
-                            JOIN alat ON peminjaman.id_alat = alat.id_alat 
-                            WHERE peminjaman.npm = '$npm_saya' 
-                            ORDER BY id_pinjam DESC";
-                    $query = mysqli_query($koneksi, $sql);
-                    
-                    while ($data = mysqli_fetch_array($query)) {
-                        $st = trim(strtolower($data['status']));
+            <div class="table-responsive-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alat</th>
+                            <th>Tanggal</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $sql = "SELECT peminjaman.*, alat.nama_alat, alat.foto_alat 
+                                FROM peminjaman 
+                                JOIN alat ON peminjaman.id_alat = alat.id_alat 
+                                WHERE peminjaman.npm = '$npm_saya' 
+                                ORDER BY id_pinjam DESC";
+                        $query = mysqli_query($koneksi, $sql);
                         
-                        // Penentuan Class & Ikon
-                        if ($st == 'menunggu') { $c = "st-menunggu"; $i = "fa-clock"; $t = "MENUNGGU"; }
-                        elseif ($st == 'disetujui') { $c = "st-disetujui"; $i = "fa-check-circle"; $t = "DISETUJUI"; }
-                        elseif ($st == 'kembali') { $c = "st-kembali"; $i = "fa-check-double"; $t = "DIKEMBALIKAN"; }
-                        elseif ($st == 'ditolak') { $c = "st-ditolak"; $i = "fa-times-circle"; $t = "DITOLAK"; }
-                        else { $c = "st-unknown"; $i = "fa-question-circle"; $t = "PENDING"; }
-                    ?>
-                    <tr>
-                        <td>
-                            <div style="display:flex; align-items:center; gap:15px;">
-                                <img src="assets/img/alat/<?php echo $data['foto_alat']; ?>" onerror="this.src='https://via.placeholder.com/60'" class="alat-img">
-                                <strong><?php echo str_replace('_', ' ', $data['nama_alat']); ?></strong>
-                            </div>
-                        </td>
-                        <td><?php echo date('d M Y', strtotime($data['tgl_pinjam'])); ?></td>
-                        <td>
-                            <span class="badge <?php echo $c; ?>">
-                                <i class="fas <?php echo $i; ?>"></i> <?php echo $t; ?>
-                            </span>
-                        </td>
-                        <td>
-                            <a href="detail_riwayat.php?id=<?php echo $data['id_pinjam']; ?>" class="btn-detail">DETAIL</a>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+                        while ($data = mysqli_fetch_array($query)) {
+                            $st = trim(strtolower($data['status']));
+                            
+                            // Penentuan Class & Ikon status sirkulasi database
+                            if ($st == 'menunggu') { $c = "st-menunggu"; $i = "fa-clock"; $t = "MENUNGGU"; }
+                            elseif ($st == 'disetujui') { $c = "st-disetujui"; $i = "fa-check-circle"; $t = "DISETUJUI"; }
+                            elseif ($st == 'kembali') { $c = "st-kembali"; $i = "fa-check-double"; $t = "DIKEMBALIKAN"; }
+                            elseif ($st == 'ditolak') { $c = "st-ditolak"; $i = "fa-times-circle"; $t = "DITOLAK"; }
+                            else { $c = "st-unknown"; $i = "fa-question-circle"; $t = "PENDING"; }
+                        ?>
+                        <tr>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:15px;">
+                                    <img src="assets/img/alat/<?php echo $data['foto_alat']; ?>" onerror="this.src='https://via.placeholder.com/60'" class="alat-img">
+                                    <strong><?php echo str_replace('_', ' ', $data['nama_alat']); ?></strong>
+                                </div>
+                            </td>
+                            <td><?php echo date('d M Y', strtotime($data['tgl_pinjam'])); ?></td>
+                            <td>
+                                <span class="badge <?php echo $c; ?>">
+                                    <i class="fas <?php echo $i; ?>"></i> <?php echo $t; ?>
+                                </span>
+                            </td>
+                            <td>
+                                <a href="detail_riwayat.php?id=<?php echo $data['id_pinjam']; ?>" class="btn-detail">DETAIL</a>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <footer>
-    <div class="footer-grid">
-        <div class="footer-info">
-            <h4><i class="fas fa-map-marker-alt"></i> Lokasi Laboratorium</h4>
-            <p>Gedung L FKIP Universitas Lampung, Lantai 2 dan 3</p>
-            <p>Jl. Prof. Dr. Sumantri Brojonegoro No. 1</p>
-            <p>Bandar Lampung, 35145</p>
-        </div>
-        <div class="footer-info">
-            <h4><i class="fas fa-envelope"></i> Hubungi Kami</h4>
-            <p>Email: labpmipa@fkip.unila.ac.id</p>
-            <p>WhatsApp: +62 812-3456-7890 (Admin Lab)</p>
-            <p>Instagram: @simlabpmipa_unila</p>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        &copy; 2026 SIMLAB - PMIPA FKIP Universitas Lampung
-    </div>
-    </footer>
-    
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>AOS.init();</script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // 🌟 JAVASCRIPT BUKA-TUTUP DROPDOWN MOBILE MENU
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            
+            // Animasi icon bars ke silang (X)
+            const icon = mobileMenu.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+    </script>
 </body>
 </html>

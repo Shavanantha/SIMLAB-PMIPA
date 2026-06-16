@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'config/koneksi.php';
+include 'config/koneksi.php'; // Menggunakan file koneksi.php asli milikmu
 
 // Proteksi Admin
 if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'admin') {
@@ -34,14 +34,15 @@ $query = mysqli_query($koneksi, $sql);
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         :root { --primary: #556B2F; --accent: #6b8e23; --bg-gray: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; background: var(--bg-gray); }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; background: var(--bg-gray); width: 100%; overflow-x: hidden; }
         
-        /* Sidebar */
-        .sidebar { width: 270px; height: 100vh; background: var(--primary); color: white; position: fixed; padding: 40px 20px; box-sizing: border-box; }
-        .sidebar a { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.6); text-decoration: none; padding: 15px; border-radius: 15px; margin-bottom: 10px; transition: 0.3s; }
+        /* --- SIDEBAR MASTER LAPTOP --- */
+        .sidebar { width: 270px; height: 100vh; background: var(--primary); color: white; position: fixed; padding: 40px 20px; box-sizing: border-box; z-index: 1000; }
+        .sidebar a { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.6); text-decoration: none; padding: 15px; border-radius: 15px; margin-bottom: 10px; transition: 0.3s; font-weight: 600; }
         .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.1); color: white; }
 
-        .content { margin-left: 270px; flex: 1; padding: 50px; }
+        /* --- CONTENT WRAPPER --- */
+        .content { margin-left: 270px; flex: 1; padding: 50px; box-sizing: border-box; width: calc(100% - 270px); }
         
         /* Card Statistik di Atas */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 40px; }
@@ -50,16 +51,18 @@ $query = mysqli_query($koneksi, $sql);
         .stat-card h3 { margin: 0; font-size: 1.8rem; }
         .stat-card p { margin: 0; color: #aaa; font-size: 0.8rem; text-transform: uppercase; }
 
-        /* Desain Grid Dua Kolom untuk Gateway Validasi */
+        /* Desain Grid Dua Kolom untuk Gateway Validasi [cite: 437] */
         .gateway-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
-        .gateway-card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        .gateway-card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); box-sizing: border-box; }
 
-        /* Kustomisasi Wajib untuk Tombol Unggah File Gambar bawaan Library HTML5-QRCode */
+        /* Kustomisasi Library HTML5-QRCode */
         #reader-file, #reader-kamera { 
             border: 2px dashed var(--primary) !important; 
             border-radius: 15px !important; 
             padding: 15px !important; 
             background: #fafafa !important;
+            max-width: 100%;
+            box-sizing: border-box;
         }
         #reader-file button, #reader-kamera button {
             background: var(--primary) !important;
@@ -76,8 +79,8 @@ $query = mysqli_query($koneksi, $sql);
         #reader-file button:hover, #reader-kamera button:hover { background: var(--accent) !important; }
         #reader-file a, #reader-kamera a { color: var(--primary) !important; font-weight: bold !important; }
 
-        /* Tabel */
-        .table-card { background: white; border-radius: 30px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.03); }
+        /* Tabel Inventaris/Peminjaman */
+        .table-card { background: white; border-radius: 30px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.03); box-sizing: border-box; width: 100%; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 15px; color: #bbb; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid #f8f9fa; }
         td { padding: 20px; border-bottom: 1px solid #fcfcfc; font-size: 0.9rem; }
@@ -96,6 +99,114 @@ $query = mysqli_query($koneksi, $sql);
         .btn-tolak { background: #e74c3c; color: white; }
         .btn-kembali { background: #3498db; color: white; }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        /* 📱 FIX REVISI RESPONSIVE ADMIN UNTUK LAYAR HP */
+        @media screen and (max-width: 768px) {
+            body {
+                flex-direction: column !important; /* Susun layout memanjang ke bawah */
+            }
+
+            /* Transformasi sidebar samping menjadi topbar horizontal */
+            .sidebar {
+                width: 100% !important;
+                height: auto !important;
+                position: relative !important; /* Lepas status fixed */
+                padding: 20px !important;
+                box-sizing: border-box;
+                border-right: none !important;
+                border-bottom: 1px solid #eee;
+            }
+
+            .sidebar div {
+                margin-bottom: 20px !important; /* Kurangi jarak logo di HP */
+            }
+            .sidebar div img {
+                width: 45px !important; /* Skala ulang logo Unila & SIMLAB di HP */
+            }
+            .sidebar h2 {
+                font-size: 1rem !important;
+                margin-top: 5px !important;
+            }
+
+            /* Susun menu navigasi admin berjejer rapi horizontal kesamping */
+            .sidebar-menu, .sidebar {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center;
+            }
+            
+            /* Gunakan flexbox untuk menu a agar pas berjejer di mobile */
+            .sidebar-nav-links {
+                display: flex !important;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                width: 100%;
+            }
+
+            .sidebar a {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+                margin-bottom: 0 !important;
+                flex: 1;
+                min-width: 105px;
+                justify-content: center;
+            }
+
+            .sidebar hr {
+                display: none !important; /* Singkirkan garis pembatas di HP */
+            }
+
+            /* 🌟 KUNCI UTAMA: Kembalikan area konten utama ke ukuran penuh */
+            .content {
+                margin-left: 0 !important; /* Hapus gap 270px laptop */
+                padding: 25px 15px !important;
+                width: 100% !important;
+                box-sizing: border-box;
+            }
+            
+            h1 {
+                font-size: 1.6rem !important;
+                margin-bottom: 25px !important;
+                text-align: center;
+            }
+
+            /* Robohkan Grid Kamera & Upload File dari 2 Kolom menjadi 1 Kolom */
+            .gateway-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+            .gateway-card {
+                padding: 20px !important;
+                border-radius: 15px !important;
+            }
+            .gateway-card h3 { font-size: 1.1rem !important; }
+
+            /* Grid Statistik Roboh Vertikal */
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+            .stat-card { padding: 20px !important; border-radius: 15px !important; }
+            .stat-card i { padding: 12px !important; font-size: 1.5rem !important; }
+
+            /* 🌟 AMANKAN TABEL DATA PERMOHONAN ADMIN DENGAN WRAPPER SCROLL */
+            .table-responsive-wrapper {
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                margin-top: 10px;
+            }
+            .table-card {
+                padding: 20px 12px !important;
+                border-radius: 20px !important;
+            }
+            table {
+                min-width: 750px !important; /* Cegah kolom info mahasiswa & foto patah berantakan */
+            }
+            td, th { padding: 12px 8px !important; font-size: 0.8rem !important; }
+            .img-mini { width: 45px; height: 45px; margin-right: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -106,29 +217,28 @@ $query = mysqli_query($koneksi, $sql);
             <img src="assets/img/logo/logo_simlabnew.png?v=1" width="70" alt="Logo SIMLAB">
             <h2 style="font-size:1.2rem; margin-top:10px;">LAB PMIPA</h2>
         </div>
-        <a href="admin_dashboard.php"><i class="fas fa-th-large"></i> Dashboard</a>
-        <a href="admin_peminjaman.php" class="active"><i class="fas fa-clipboard-check"></i> Peminjaman</a>
-        <a href="admin_alat.php"><i class="fas fa-microscope"></i> Inventaris Alat</a>
-        <hr style="border: 0.5px solid rgba(255,255,255,0.1); margin: 30px 0;">
-        <a href="logout.php" style="color: #ffb8b8;"><i class="fas fa-power-off"></i> Keluar</a>
+        <div class="sidebar-nav-links">
+            <a href="admin_dashboard.php"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="admin_peminjaman.php" class="active"><i class="fas fa-clipboard-check"></i> Peminjaman</a>
+            <a href="admin_alat.php"><i class="fas fa-microscope"></i> Inventaris Alat</a>
+            <a href="logout.php" style="color: #ffb8b8;"><i class="fas fa-power-off"></i> Keluar</a>
+        </div>
     </div>
 
     <div class="content">
-        <h1 style="color:var(--primary); font-weight:800; margin-bottom:40px;">Kelola Permohonan</h1>
+        <h1>Kelola Permohonan</h1>
         
         <div class="gateway-grid">
             
             <div class="gateway-card" data-aos="fade-right">
                 <h3 style="color: var(--primary); margin-top:0;"><i class="fas fa-camera"></i> Metode 1: Live Scan Kamera</h3>
                 <p style="color: #888; font-size: 0.8rem; margin-top: -5px; margin-bottom: 20px;">Nyalakan sensor kamera laptop untuk mendeteksi langsung QR Code.</p>
-                
                 <div id="reader-kamera"></div>
             </div>
 
             <div class="gateway-card" data-aos="fade-left">
                 <h3 style="color: var(--primary); margin-top:0;"><i class="fas fa-file-import"></i> Metode 2: Upload Gambar / Manual</h3>
                 <p style="color: #888; font-size: 0.8rem; margin-top: -5px; margin-bottom: 20px;">Pilih berkas screenshot QR Code mahasiswa atau input manual kodenya.</p>
-                
                 <div id="reader-file"></div>
 
                 <form action="proses_validasi_qr.php" method="POST" style="display: flex; gap: 10px; margin-top: 25px;">
@@ -163,80 +273,74 @@ $query = mysqli_query($koneksi, $sql);
         </div>
 
         <div class="table-card" data-aos="fade-up">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mahasiswa</th>
-                        <th>Alat & Prodi Pemilik</th>
-                        <th>Tgl Pinjam</th>
-                        <th>Status</th>
-                        <th>Tindakan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($data = mysqli_fetch_array($query)) { 
-                        $status_low = strtolower($data['status']);
-                    ?>
-                    <tr>
-                        <td>
-                            <strong style="display:block;"><?php echo $data['nama']; ?></strong>
-                            <small style="color:#aaa;"><?php echo $data['npm']; ?></small>
-                        </td>
-                        <td>
-                            <div class="alat-box">
-                                <img src="assets/img/alat/<?php echo $data['foto_alat']; ?>" onerror="this.src='https://via.placeholder.com/55'" class="img-mini">
-                                <div>
-                                    <strong style="display:block;"><?php echo str_replace('_', ' ', $data['nama_alat']); ?></strong>
-                                    <small style="color:var(--accent);"><?php echo $data['prodi_pemilik']; ?></small>
+            <div class="table-responsive-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mahasiswa</th>
+                            <th>Alat & Prodi Pemilik</th>
+                            <th>Tgl Pinjam</th>
+                            <th>Status</th>
+                            <th>Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($data = mysqli_fetch_array($query)) { 
+                            $status_low = strtolower($data['status']);
+                        ?>
+                        <tr>
+                            <td>
+                                <strong style="display:block;"><?php echo $data['nama']; ?></strong>
+                                <small style="color:#aaa;"><?php echo $data['npm']; ?></small>
+                            </td>
+                            <td>
+                                <div class="alat-box">
+                                    <img src="assets/img/alat/<?php echo $data['foto_alat']; ?>" onerror="this.src='https://via.placeholder.com/55'" class="img-mini">
+                                    <div>
+                                        <strong style="display:block;"><?php echo str_replace('_', ' ', $data['nama_alat']); ?></strong>
+                                        <small style="color:var(--accent);"><?php echo $data['prodi_pemilik']; ?></small>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td><?php echo date('d M Y', strtotime($data['tgl_pinjam'])); ?></td>
-                        <td><span class="badge status-<?php echo $status_low; ?>"><?php echo $status_low; ?></span></td>
-                        <td>
-                            <?php if ($status_low == 'menunggu'): ?>
-                                <a href="proses_aksi.php?id=<?php echo $data['id_pinjam']; ?>&status=disetujui" class="btn btn-acc" onclick="return confirm('Setujui peminjaman?')">ACC</a>
-                                <a href="proses_aksi.php?id=<?php echo $data['id_pinjam']; ?>&status=ditolak" class="btn btn-tolak" onclick="return confirm('Tolak permohonan?')">TOLAK</a>
-                            <?php elseif ($status_low == 'disetujui'): ?>
-                                <a href="proses_kembali.php?id=<?php echo $data['id_pinjam']; ?>" class="btn btn-kembali" onclick="return confirm('Apakah alat sudah dikembalikan?')">KEMBALIKAN</a>
-                            <?php else: ?>
-                                <span style="color:#2ecc71; font-weight:800; font-size:0.75rem;">SELESAI</span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+                            </td>
+                            <td><?php echo date('d M Y', strtotime($data['tgl_pinjam'])); ?></td>
+                            <td><span class="badge status-<?php echo $status_low; ?>"><?php echo $status_low; ?></span></td>
+                            <td>
+                                <?php if ($status_low == 'menunggu'): ?>
+                                    <a href="proses_aksi.php?id=<?php echo $data['id_pinjam']; ?>&status=disetujui" class="btn btn-acc" onclick="return confirm('Setujui peminjaman?')">ACC</a>
+                                    <a href="proses_aksi.php?id=<?php echo $data['id_pinjam']; ?>&status=ditolak" class="btn btn-tolak" onclick="return confirm('Tolak permohonan?')">TOLAK</a>
+                                <?php elseif ($status_low == 'disetujui'): ?>
+                                    <a href="proses_kembali.php?id=<?php echo $data['id_pinjam']; ?>" class="btn btn-kembali" onclick="return confirm('Apakah alat sudah dikembalikan?')">KEMBALIKAN</a>
+                                <?php else: ?>
+                                    <span style="color:#2ecc71; font-weight:800; font-size:0.75rem;">SELESAI</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>AOS.init({ duration: 800 });</script>
+    <script>AOS.init({ duration: 800, once: true });</script>
     
     <script src="https://unpkg.com/html5-qrcode"></script>
     
     <script>
-        // Router Pemroses Utama Token Sirkulasi
-  // Router Pemroses Utama Token Sirkulasi
-// Router Pemroses Utama Token Sirkulasi
         function kirimDataValidasi(decodedContent) {
             let idTransaksi = decodedContent;
             if (decodedContent.includes('|')) {
                 let dataPecah = decodedContent.split('|');
-                idTransaksi = dataPecah[0]; // Ambil Kunci ID TRX saja
+                idTransaksi = dataPecah[0];
             }
 
-            // Masukkan secara paksa ke hidden input
             document.getElementById('id_pinjam_hidden').value = idTransaksi.trim();
-            
-            // Alert konfirmasi penangkap token
             alert('Sistem Berhasil Menangkap Token: ' + idTransaksi.trim());
-            
-            // KUNCI REVISI JAVASCRIPT: Memicu aksi klik fisik pada tombol submit otomatis agar sinkron ke backend
             document.getElementById('btn_submit_otomatis').click();
         }
 
-        // --- SENSOR 1: LIVE SCAN KAMERA ---
+        // --- SENSOR 1: LIVE SCAN KAMERA [cite: 421] ---
         function onCameraScanSuccess(decodedText, decodedResult) {
             kirimDataValidasi(decodedText);
         }
@@ -244,7 +348,6 @@ $query = mysqli_query($koneksi, $sql);
         html5QrcodeCamera.render(onCameraScanSuccess, function(error){});
 
         // --- SENSOR 2: BACA SCREENSHOT FILE GAMBAR ---
-        // KUNCI REVISI: Menggunakan elemen input bawaan Html5QrcodeScanner agar UI pencari berkas tampil sempurna tanpa crash
         let html5QrcodeFile = new Html5QrcodeScanner("reader-file", { fps: 10, qrbox: 250 });
         html5QrcodeFile.render(function(decodedText, decodedResult) {
             kirimDataValidasi(decodedText);
